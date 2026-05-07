@@ -1,9 +1,15 @@
 // ============================================================
-// API SERVICE - Axios instance with JWT interceptor
-// Centralized HTTP client for all API calls
+// API SERVICE - Axios instance with mock data fallback
+// In demo mode (no backend), uses mock data automatically
 // ============================================================
 
 import axios from 'axios';
+import { mockAPI } from './mockData';
+
+// Check if we're in demo mode (no backend available)
+// On Vercel/static deployment, there's no /api backend
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true' ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost');
 
 // Create Axios instance with base configuration
 const API = axios.create({
@@ -15,7 +21,6 @@ const API = axios.create({
 
 /**
  * Request Interceptor: Automatically attach JWT token
- * to every outgoing request if the user is logged in
  */
 API.interceptors.request.use(
   (config) => {
@@ -33,14 +38,12 @@ API.interceptors.request.use(
 
 /**
  * Response Interceptor: Handle 401 Unauthorized globally
- * If token is expired/invalid, redirect to login
  */
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('healthhub_user');
-      // Only redirect if not already on login page
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
@@ -50,11 +53,16 @@ API.interceptors.response.use(
 );
 
 // ============================================================
-// API FUNCTIONS - Organized by module
+// API FUNCTIONS — Uses mock data in demo mode, real API otherwise
 // ============================================================
 
 // ---- AUTH ----
-export const authAPI = {
+export const authAPI = DEMO_MODE ? {
+  register: (data) => mockAPI.auth.register(data),
+  login: (data) => mockAPI.auth.login(data),
+  getProfile: () => mockAPI.auth.getProfile(),
+  updateProfile: (data) => mockAPI.auth.updateProfile(data),
+} : {
   register: (data) => API.post('/auth/register', data),
   login: (data) => API.post('/auth/login', data),
   getProfile: () => API.get('/auth/profile'),
@@ -62,7 +70,14 @@ export const authAPI = {
 };
 
 // ---- MEDICINES ----
-export const medicineAPI = {
+export const medicineAPI = DEMO_MODE ? {
+  getAll: (params) => mockAPI.medicines.getAll(params),
+  getById: (id) => mockAPI.medicines.getAll().then(r => ({ data: { data: r.data.data.find(m => m._id === id) } })),
+  create: (data) => mockAPI.medicines.create(data),
+  update: (id, data) => mockAPI.medicines.update(id, data),
+  complete: (id) => mockAPI.medicines.complete(id),
+  delete: (id) => mockAPI.medicines.delete(id),
+} : {
   getAll: (params) => API.get('/medicines', { params }),
   getById: (id) => API.get(`/medicines/${id}`),
   create: (data) => API.post('/medicines', data),
@@ -72,7 +87,13 @@ export const medicineAPI = {
 };
 
 // ---- WATER ----
-export const waterAPI = {
+export const waterAPI = DEMO_MODE ? {
+  log: (data) => mockAPI.water.log(data),
+  getToday: () => mockAPI.water.getToday(),
+  getWeekly: () => mockAPI.water.getWeekly(),
+  updateGoal: (data) => mockAPI.water.updateGoal(data),
+  delete: (id) => mockAPI.water.delete(id),
+} : {
   log: (data) => API.post('/water', data),
   getToday: () => API.get('/water/today'),
   getWeekly: () => API.get('/water/weekly'),
@@ -81,7 +102,14 @@ export const waterAPI = {
 };
 
 // ---- HEALTH TIPS ----
-export const tipsAPI = {
+export const tipsAPI = DEMO_MODE ? {
+  getDaily: () => mockAPI.tips.getDaily(),
+  getAll: (params) => mockAPI.tips.getAll(params),
+  getRandom: () => mockAPI.tips.getRandom(),
+  create: (data) => mockAPI.tips.create(data),
+  update: (id, data) => mockAPI.tips.update(id, data),
+  delete: (id) => mockAPI.tips.delete(id),
+} : {
   getDaily: () => API.get('/tips/daily'),
   getAll: (params) => API.get('/tips', { params }),
   getRandom: () => API.get('/tips/random'),
@@ -91,7 +119,13 @@ export const tipsAPI = {
 };
 
 // ---- EXERCISES ----
-export const exerciseAPI = {
+export const exerciseAPI = DEMO_MODE ? {
+  getAll: (params) => mockAPI.exercises.getAll(params),
+  create: (data) => mockAPI.exercises.create(data),
+  update: (id, data) => mockAPI.exercises.update(id, data),
+  complete: (id) => mockAPI.exercises.complete(id),
+  delete: (id) => mockAPI.exercises.delete(id),
+} : {
   getAll: (params) => API.get('/exercises', { params }),
   create: (data) => API.post('/exercises', data),
   update: (id, data) => API.put(`/exercises/${id}`, data),
@@ -100,7 +134,11 @@ export const exerciseAPI = {
 };
 
 // ---- DASHBOARD ----
-export const dashboardAPI = {
+export const dashboardAPI = DEMO_MODE ? {
+  getStats: () => mockAPI.dashboard.getStats(),
+  getWeekly: () => mockAPI.dashboard.getWeekly(),
+  getQuote: () => mockAPI.dashboard.getQuote(),
+} : {
   getStats: () => API.get('/dashboard/stats'),
   getWeekly: () => API.get('/dashboard/weekly'),
   getQuote: () => API.get('/dashboard/quote'),
