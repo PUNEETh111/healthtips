@@ -1,0 +1,178 @@
+/* ============================================================
+   GLOBAL STYLES - Smart Health Tips & Reminder System
+   Uses Tailwind CSS with custom healthcare-themed styling
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- BASE STYLES ---- */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-600;
+  }
+}
+
+/* ---- COMPONENT STYLES ---- */
+@layer components {
+  /* Glass morphism card effect */
+  .glass-card {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-lg;
+  }
+
+  /* Primary gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-primary-500 to-accent-500;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:shadow-primary-500/10;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium
+    hover:from-primary-600 hover:to-primary-700 active:scale-95 transition-all duration-200 shadow-lg shadow-primary-500/25;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-medium
+    hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply px-6 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium
+    hover:from-red-600 hover:to-red-700 active:scale-95 transition-all duration-200 shadow-lg shadow-red-500/25;
+  }
+
+  /* Input styles */
+  .input-field {
+    @apply w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl
+    focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all duration-200
+    placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white;
+  }
+
+  /* Select styles */
+  .select-field {
+    @apply w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl
+    focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all duration-200
+    text-gray-900 dark:text-white appearance-none cursor-pointer;
+  }
+
+  /* Stat card gradient variants */
+  .stat-gradient-1 {
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  }
+  .stat-gradient-2 {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  }
+  .stat-gradient-3 {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  }
+  .stat-gradient-4 {
+    background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  }
+  .stat-gradient-5 {
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  }
+  .stat-gradient-6 {
+    background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+  }
+
+  /* Page header */
+  .page-header {
+    @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white;
+  }
+
+  .page-subtitle {
+    @apply text-gray-500 dark:text-gray-400 mt-1;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-success {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+  }
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+  }
+  .badge-info {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+  }
+  .badge-danger {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+  }
+}
+
+/* ---- UTILITY STYLES ---- */
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-accent-500;
+  }
+}
+
+/* ---- ANIMATIONS ---- */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Water wave animation */
+@keyframes wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-wave {
+  animation: wave 2s ease-in-out infinite;
+}
+
+/* Progress bar animation */
+@keyframes progressFill {
+  from { width: 0%; }
+}
+
+.animate-progress {
+  animation: progressFill 1s ease-out;
+}
