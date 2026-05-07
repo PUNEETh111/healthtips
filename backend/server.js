@@ -1,11 +1,13 @@
 // ============================================================
 // EXPRESS SERVER - Entry Point
 // Smart Health Tips & Reminder System Backend
+// Serves API + Frontend (production)
 // ============================================================
 
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
@@ -27,7 +29,11 @@ const app = express();
 
 // Enable CORS for frontend communication
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL  // Allow production frontend URL
+  ].filter(Boolean),
   credentials: true
 }));
 
@@ -50,34 +56,39 @@ app.use('/api/tips', healthTipRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// ---- ROOT ENDPOINT ----
-app.get('/', (req, res) => {
-  res.json({
-    message: '🏥 Smart Health Tips & Reminder System API',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      medicines: '/api/medicines',
-      water: '/api/water',
-      tips: '/api/tips',
-      exercises: '/api/exercises',
-      dashboard: '/api/dashboard'
-    }
-  });
-});
-
 // ---- HEALTH CHECK ----
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ---- 404 HANDLER ----
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`
+// ---- SERVE FRONTEND IN PRODUCTION ----
+// In production, Express serves the built React frontend
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React build folder
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  // For any route that doesn't match an API endpoint,
+  // serve the React index.html (supports client-side routing)
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../frontend/dist/index.html'));
   });
-});
+} else {
+  // Development root endpoint
+  app.get('/', (req, res) => {
+    res.json({
+      message: '🏥 Smart Health Tips & Reminder System API',
+      version: '1.0.0',
+      endpoints: {
+        auth: '/api/auth',
+        medicines: '/api/medicines',
+        water: '/api/water',
+        tips: '/api/tips',
+        exercises: '/api/exercises',
+        dashboard: '/api/dashboard'
+      }
+    });
+  });
+}
 
 // ---- ERROR HANDLER ----
 app.use((err, req, res, next) => {
@@ -89,7 +100,7 @@ app.use((err, req, res, next) => {
 });
 
 // ---- START SERVER ----
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 const startServer = async () => {
   try {

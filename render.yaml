@@ -1,0 +1,20 @@
+# ============================================================
+# RENDER DEPLOYMENT CONFIGURATION
+# Deploys as a single web service (backend serves frontend)
+# ============================================================
+
+services:
+  - type: web
+    name: healthhub
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm run render-build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false  # Set this manually in Render dashboard

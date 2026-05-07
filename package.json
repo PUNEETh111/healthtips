@@ -1,0 +1,14 @@
+{
+  "name": "smart-health-tips-reminder",
+  "version": "1.0.0",
+  "description": "Smart Health Tips & Reminder System - Full Stack MERN Application",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && node server.js",
+    "seed": "cd backend && npm run seed",
+    "render-build": "cd frontend && npm install && npm run build && cd ../backend && npm install"
+  }
+}
